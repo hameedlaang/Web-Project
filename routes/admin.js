@@ -1,17 +1,18 @@
-const express = require('express');
-const router = express.Router();
-
-// Middleware to protect admin routes 
-const isAdmin = (req, res, next) => {
-    if (req.session.user && req.session.user.role === 'Admin') {
-        next();
-    } else {
-        res.status(403).send("<h1>403 Forbidden</h1><p>Admin access only.</p>"); // 
+// Fetch all portfolios to display in a table
+async function loadPortfolios() {
+    try {
+        const response = await fetch('/auth/all-users'); // You'd need a route for this in server.js
+        const users = await response.json();
+        
+        const tableBody = document.getElementById('portfolioTableBody');
+        tableBody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.skills}</td>
+                <td><button onclick="viewDetails('${user._id}')">View</button></td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error("Could not load portfolios", err);
     }
-};
-
-router.get('/dashboard', isAdmin, (req, res) => {
-    res.send("<h1>Admin Dashboard</h1><p>Welcome, Admin. You can manage users here.</p>"); // 
-});
-
-module.exports = router;
+}

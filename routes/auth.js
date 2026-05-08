@@ -1,40 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt'); // Rubric #4: Hashing
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
-// Signup Route
 router.post('/signup', async (req, res) => {
+    const { username, email, password } = req.body;
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const newUser = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: hashedPassword, // Rubric #5: Plain-text never stored
-            role: 'User'
-        });
+        const exists = await User.findOne({ email });
+        if (exists) return res.send("<script>alert('User already exists!'); window.location.href='/signup.html';</script>");
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, email, password: hashedPassword });
         await newUser.save();
         res.redirect('/login.html');
-    } catch (err) {
-        res.status(500).send("Error creating account.");
-    }
+    } catch (err) { res.status(500).send("Signup Error"); }
 });
 
-// Login Route (Rubric #2 & #6)
 router.post('/login', async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (user && await bcrypt.compare(req.body.password, user.password)) {
-        req.session.user = { id: user._id, role: user.role };
-        res.redirect(user.role === 'Admin' ? '/admin.html' : '/index.html');
-    } else {
-        res.status(401).send("Invalid email or password.");
-    }
-});
-
-// Logout Route
-router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (user && await bcrypt.compare(password, user.password)) {
+            req.session.user = { id: user._id, username: user.username };
+            res.redirect('/education.html');
+        } else {
+            res.send("<script>alert('Invalid Credentials'); window.location.href='/login.html';</script>");
+        }
+    } catch (err) { res.status(500).send("Login Error"); }
 });
 
 module.exports = router;

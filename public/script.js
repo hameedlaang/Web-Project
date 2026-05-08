@@ -1,19 +1,23 @@
-// Rubric #13: Client-side validation 
+// client-side validation and UI effects
 document.addEventListener('DOMContentLoaded', () => {
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            const errorElement = document.getElementById('error-message');
+    const textareas = document.querySelectorAll('textarea');
 
-            if (!email.includes('@')) {
-                e.preventDefault();
-                errorElement.innerText = "Please enter a valid email address."; // 
-            } else if (message.length < 10) {
-                e.preventDefault();
-                errorElement.innerText = "Message must be at least 10 characters long."; // 
+    // Auto-expand textareas as user types
+    textareas.forEach(area => {
+        area.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+
+    // Simple password strength logger
+    const passwordInput = document.querySelector('input[type="password"]');
+    if (passwordInput) {
+        passwordInput.addEventListener('keyup', (e) => {
+            if (e.target.value.length < 6) {
+                e.target.style.borderColor = "red";
+            } else {
+                e.target.style.borderColor = "#27ae60";
             }
         });
     }
