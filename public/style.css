@@ -1,0 +1,67 @@
+/* General Styles */
+:root {
+    --main-bg: #f4f4f9;
+    --primary: #2c3e50;
+    --accent: #3498db;
+    --white: #ffffff;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    line-height: 1.6;
+    background: var(--main-bg);
+}
+
+/* Rubric #18: Sticky Navbar */
+.navbar {
+    background: var(--primary);
+    color: var(--white);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Rubric #20: Responsive Design (Mobile) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+    .nav-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+}
+
+/* Sections */
+section {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* Footer (Rubric #26) */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    color: white;
+}
